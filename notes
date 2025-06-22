@@ -1,0 +1,212 @@
+class is a reservered keyword is typescript and javascript
+
+we need () to breakup our jsx markup in multiple lines infront of return to spread the jsx markup in multiple lines
+
+in react a component cannot return more than one element, therefore 
+1. we wrap element inside a div but we are adding one more extra element in the dom for react syantax which is unnessary
+2. better way is to use a fragment which lets you group elements whithout a wrapper node therefore when the component is rendered on the screen we will not have additional element in the DOM
+
+instead of importing Fragment from 'react', we can use <> </>, which is a shorthand for Fragment
+
+in jsx we dont have a for loop
+
+in jsx markup we can only use html elements or other react components, so to render data dynamically we need to wrap javascript blocks in {} otherwise we get compilation error
+
+when we map anything like arrays items to multiple html elements for example there needs to be a key property or prop which is needed by react to keep track of our items so when we add or remove items dynamically, react should know what part of the page should be updated
+we shoould give each item a unique key
+
+we can use js dynamically inbetween jsx markup but sometimes our logic can get complicated which would polute our jsx markup therefore we can define that logic as a function with parameters or const then use that dynamically {} in our markup
+
+{/* in and operator we first expression is true and second express is anything like 1,sid,etc the second expression will be displayed and if first expression is false then nothing will be rendered on the screen, therefore we can use this to render dynamically */}
+true && 1  = 1
+true && "sid" = "sid"
+false && "sid" = "false" (in this case the second expression will not be rendered)
+
+In React, the term “prop” literally stands for “property” — just a shorter word commonly used by React developers.In React, props specifically refer to component inputs.
+
+We mean that all props (like name, age, etc.) are keys/properties inside a single object (props), and this object is automatically passed to the component when it is rendered.
+
+in react each element has a property or prop called onclick and the onclick's arrow function can optionally have a parameter that represent the browser event, we can call it e or event
+
+when mapping items we can add extra parameter "index" with which we can see the index of the item that is selected
+
+SyntheticBaseEvent is built in classess in react which helps with cross browser compatitbilty as it is a wrapper around native browser event object because different browser have different implementation of event object
+some properties of SyntheticBaseEvent are-
+clientx and clienty which are postion where we clicked
+type which represent the type of the event
+target represents which is the element i clicked
+
+if our event logic get to complex we dont want it in our jsx markup, we create a seperate function for it in our component
+
+parameter "....." implicitly has an 'any' type. ts(7006) is an error casued by typescript compiler when it doesent know the type of the parameter while declaring a brand new function i.e the element/parameter is a number, sting, an object or what is it ? therefore we need to specify the type that element for auto completion and type safety 
+
+Auto-completion is a feature in your editor (like VSCode) that suggests possible values, methods, or properties as you type.
+Type safety means TypeScript checks the types of your data at compile-time, preventing common errors.
+
+const handleClick = (event: MouseEvent)=> console.log(event);
+Over here we imported mouseEvent to specify the type of the event using type annotation through specifing the type of our variables and parameters
+
+3️⃣ React’s Event System
+✅ In React, when you set:
+
+jsx
+Copy code
+<button onClick={handleClick}>Click me</button>
+React remembers:
+
+“For this button, when there’s a click event, I’ll call handleClick.”
+
+At runtime (when the user clicks), React:
+
+detects the click.
+
+calls the function you passed (handleClick).
+
+🔴 Why not onClick={handleClick()}?
+If you wrote:
+
+jsx
+Copy code
+onClick={handleClick()}
+you’d be calling handleClick immediately during render, not when the user clicks.
+
+For example:
+
+javascript
+Copy code
+function greet() {
+  console.log("Hello!");
+}
+
+greet(); // Runs right now!
+
+const ref = greet; // Just a reference
+✅ onClick={handleClick} → Runs only when clicked.
+❌ onClick={handleClick()} → Runs immediately during render (bad if you only want it to happen on click).
+
+✅ Passing function reference: onClick={handleClick}
+✅ React stores this reference and only calls the function when the event occurs (like a user clicking).
+✅ This is crucial for efficient and predictable behavior in React.
+
+you can give two className to a html element in jsx
+
+hook is a function that allows to tap into built in features into react 
+
+using usestate hook is a function, we can tell react that a component will have data that will change over time
+
+useState() returns a array with two elements the first one is a variable like selectedIndex and decond one is gonna be updater function which using we can update this variabe and then react will be notified and then it will rerender the component whioch causes the dom to be updated under the hood
+
+we think in terms of component that have state, when the state of a component changes react will update the dom to match the new component state
+
+to create dynamic components we pass the reference only and dont call them
+
+["selectedIndex, setSelectedIndex"] = useState(-1);
+we follow this naming convention to name our state variables
+
+In React, useState is a hook that lets you add state to a functional component:
+
+jsx
+Copy code
+const [count, setCount] = useState(0);
+But how does React keep track of this state across re-renders without losing data?
+
+🔧 Under the Hood: How useState Really Works
+1️⃣ React uses an internal array to store state values
+Every time a component renders, React runs the component from top to bottom, and tracks how many useState calls are made.
+
+Each useState call is internally stored like:
+
+js
+Copy code
+const hooks = []; // internal array (per component instance)
+let hookIndex = 0;
+Every time you call useState, React does something like:
+
+js
+Copy code
+function useState(initialValue) {
+  const currentIndex = hookIndex;
+
+  if (hooks[currentIndex] === undefined) {
+    hooks[currentIndex] = initialValue;
+  }
+
+  function setState(newValue) {
+    hooks[currentIndex] = newValue;
+    reRenderComponent(); // Triggers re-render
+  }
+
+  hookIndex++;
+  return [hooks[currentIndex], setState];
+}
+📌 That’s a simplified version, but it's how it works conceptually.
+
+2️⃣ React resets the hook index before every render
+This ensures useState calls are read in the same order every time.
+That’s why you can't put hooks inside conditionals or loops.
+
+When you use the same component twice, each one gets its own isolated state because React treats each instance of a component independently, even if the code is identical.
+
+props are input to our components, just like values we assign to argument of a function
+
+in typescript interface keyword is used to define the structure or shape of an object including what properties, methods, and types it should have
+we use Interface followed by name of component and then props like interface ListProps {
+    items: string[];
+    heading: string;
+
+function ListGroup({items, heading}: ListProps) {
+    //const { items, heading } = props; this happens when we destructure props with array to directly access the value in it but if we use props : listprops then to access the props object, You don’t have to write props.items or props.heading again and again
+About Your Question: “How can I use array in parameter?”
+You're not passing an array directly into the function as a parameter. You're passing an object, and one of its properties (items) is an array.
+
+Destructuring is a feature in JavaScript (and TypeScript) that lets you unpack values from objects or arrays and assign them to variables easily.
+
+Instead of manually extracting properties one by one, destructuring lets you do it in a single line.
+
+Parent component or consumer of a component is basically a component which uses another component like app.tsx is parent component of props.tsx
+
+An event handler is a function in JavaScript or React that runs in response to an event happening in the browser.
+
+we should treat props as immutable that means read only as it is based on functional programing principles
+
+state is mutable and is similar to local variables
+
+both props and state change causes react to rerender the DOM
+
+An event in React is just like an event in HTML/JavaScript — it represents something that happens on the web page.
+
+ Difference from Regular HTML
+React uses a synthetic event system — a lightweight wrapper around the browser’s native events to ensure cross-browser compatibility. So, instead of onclick, you write onClick (camelCase) in React
+
+rafce is short for react arrow function component export, it creates basic structure of an arrow function to being with just like html boiler plate
+
+You must use const, let, or var when assigning a function to a variable — otherwise, you’ll get a reference error in strict mode or modern JS.
+You must use const, let, or var when assigning a function to a variable — otherwise, you’ll get a reference error in strict mode or modern JS like this ReferenceError: Cannot access 'Alert' before initialization
+React components are not meant to be reassigned, The value cannot be reassigned (good for functions) 
+
+consider prop or property in react as you consider property of html tag like its classname etc
+
+there is a special prop that support all the component called childern
+
+if we wanna pass complex props as childern or anything then we define the type of childern with ReactNode by which we can pass anything
+
+ReactNode is a TypeScript type (not a class or object but alais for class) that represents anything that React can render.
+
+type ReactNode = ReactChild | ReactFragment | ReactPortal | boolean | null | undefined;
+So when you use ReactNode, you are telling TypeScript:
+“This prop can be any valid React renderable content — including JSX, strings, numbers, null, etc.”
+
+TypeScript Type:- In TypeScript, a type is a way to describe the shape, structure, or behavior of a value — like what kind of data it holds and how it can be used.
+
+we can use react dev tools and look at the hirarchy of our components in react app which is the component tree that React takes and renders actual DoM
+
+if we wanna better understand how components work then we can inspect in react dev tools
+
+we use props to take  out all the function and values we want to pass externally so that our component is resuable
+
+in programing things that are related should be next to each other and this concept is called cohesion, like css for listgroup and listgroup.tsx file should be together, like we we want to use the resuable listgroup component in another project then we can directly copy and paste the folder together
+
+import  listgroup from "./ListGroup.module.css"; & import ListGroup from './components/ListGroup/ListGroup'; 
+instead of importing files like these which looks ugly and timeconsuming and if there are too many files to import then it takes to much time you can create an index js or ts file to import the file over there then export it, then we reference the folder not the file as if we dont supply the file and a folder the compiler will look for a file called Index.
+
+
